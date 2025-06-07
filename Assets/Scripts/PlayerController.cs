@@ -8,10 +8,16 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rigidbody2D;
     Vector2 move;
     public float speed = 3.0f;
-    
+
     //Variables related to the health system
     public int maxHealth = 5;
-    int currentHealth = 1;
+
+    public int health
+    {
+        get { return currentHealth; }
+    }
+
+    public int currentHealth = 1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //Start is called before the first frame update
@@ -28,7 +34,7 @@ public class PlayerController : MonoBehaviour
         move = MoveAction.ReadValue<Vector2>();
         // Debug.Log(move);
     }
-    
+
     //FixedUpdate has the same call rate as the physics system
     void FixedUpdate()
     {
