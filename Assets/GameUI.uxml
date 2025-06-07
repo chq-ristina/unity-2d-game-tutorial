@@ -1,0 +1,8 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:VisualElement name="HealthBarBackground" style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Art/SugarLand/UI/UIHealthFrame.png?fileID=21300000&amp;guid=587ae468f8de9ec419f7f86c5433bcbf&amp;type=3#UIHealthFrame&quot;); width: 665px; height: 269px; -unity-background-scale-mode: scale-to-fit;">
+        <engine:VisualElement name="HealthBarContainer" style="flex-grow: 1; position: absolute; height: 106px; width: 318px; top: 78px; left: 292px;">
+            <engine:VisualElement name="HealthBar" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Art/SugarLand/UI/UIHealthBar.png?fileID=21300000&amp;guid=b28ee55f43291f14ab9219808f397b88&amp;type=3#UIHealthBar&quot;);" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+    <engine:VisualElement name="CharacterPortrait" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Art/SugarLand/UI/CharacterPortrait.png?fileID=21300000&amp;guid=e8af26c6841fc05459ccaf23dbab2b63&amp;type=3#CharacterPortrait&quot;); height: 206px; width: 200px; -unity-background-scale-mode: scale-to-fit; position: absolute; top: 31px; left: 73px;" />
+</engine:UXML>
