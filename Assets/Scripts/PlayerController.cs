@@ -3,6 +3,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    Animator animator;
+    //The moveDirection variable is important because the player character can stand still, whereas the enemy is always
+    //moving. When the character is still, both Move X and Move Y will be 0, so the State Machine needs to be explicitly
+    //provided with a direction, which this variable provides.
+    Vector2 moveDirection = new Vector2(1, 0);
+
     //Variables related to player character movement
     public InputAction MoveAction;
     private Rigidbody2D rigidbody2D;
@@ -11,12 +17,14 @@ public class PlayerController : MonoBehaviour
 
     //Variables related to the health system
     public int maxHealth = 5;
+
     public int health
     {
         get { return currentHealth; }
     }
+
     public int currentHealth;
-    
+
     // Variables related to temporary invincibility
     public float timeInvincible = 2.0f;
     private bool isInvincible;
@@ -29,12 +37,31 @@ public class PlayerController : MonoBehaviour
         MoveAction.Enable();
         rigidbody2D = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth;
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
         move = MoveAction.ReadValue<Vector2>();
+
+        //The condition uses Mathf.Approximately to make the check instead of the equality operator (==) because the
+        //way that computers store float values means that there is a tiny loss in precision.
+        //This loss means that you should not test for perfect quality, because an operation that should return 0.0f
+        //could end up returning 0.0000000001f instead. The bool Approximately takes the imprecision into account,
+        //and returns true if the value can be considered equal minus that imprecision.
+        if (!Mathf.Approximately(move.x, 0.0f) || !Mathf.Approximately(move.y, 0.0f))
+        {
+            moveDirection.Set(move.x, move.y);
+            moveDirection.Normalize();
+        }
+        
+        //These instructions pass the direction data to the PlayerCharacter GameObject’s Animator component.
+        // The third instruction passes the length of the move vector to the Speed parameter. This length will be 0 if
+        // the player character is stationary, or 1 if the character is moving (because the length is normalized).
+        animator.SetFloat("Look X", moveDirection.x);
+        animator.SetFloat("Look Y", moveDirection.y);
+        animator.SetFloat("Speed", move.magnitude);
 
         if (isInvincible)
         {
@@ -59,12 +86,14 @@ public class PlayerController : MonoBehaviour
         {
             if (isInvincible)
             {
-                return; 
+                return;
             }
-            
+
             isInvincible = true;
             damageCooldown = timeInvincible;
+            animator.SetTrigger("Hit");
         }
+
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         UIHandler.instance.SetHealthBar(currentHealth / (float)maxHealth);
     }
