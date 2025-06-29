@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     Animator animator;
+
     //The moveDirection variable is important because the player character can stand still, whereas the enemy is always
     //moving. When the character is still, both Move X and Move Y will be 0, so the State Machine needs to be explicitly
     //provided with a direction, which this variable provides.
@@ -30,6 +31,8 @@ public class PlayerController : MonoBehaviour
     private bool isInvincible;
     private float damageCooldown;
 
+    public GameObject projectilePrefab;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //Start is called before the first frame update
     void Start()
@@ -55,7 +58,7 @@ public class PlayerController : MonoBehaviour
             moveDirection.Set(move.x, move.y);
             moveDirection.Normalize();
         }
-        
+
         //These instructions pass the direction data to the PlayerCharacter GameObject’s Animator component.
         // The third instruction passes the length of the move vector to the Speed parameter. This length will be 0 if
         // the player character is stationary, or 1 if the character is moving (because the length is normalized).
@@ -71,6 +74,11 @@ public class PlayerController : MonoBehaviour
                 isInvincible = false;
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Launch();
+        }    
     }
 
     //FixedUpdate has the same call rate as the physics system
@@ -96,5 +104,25 @@ public class PlayerController : MonoBehaviour
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         UIHandler.instance.SetHealthBar(currentHealth / (float)maxHealth);
+    }
+
+    public void Launch()
+    {
+        //This instruction calls Instantiate, a Unity function that takes three parameters.
+        //
+        // Instatiate’s first parameter is a GameObject reference. Calling Instantiate creates a copy of that GameObject
+        // in a position defined by the second parameter, with the rotation defined by the third parameter.
+        // In this situation, the Projectile prefab is the GameObject. You’ve defined a position at the position of the
+        // PlayerCharacter GameObject’s Rigidbody component but a little up, so the Projectile prefab is placed closer
+        // to the character sprite’s hands than feet. You’ve also set a rotation of Quaternion.identity.
+        //
+        // Quaternions are mathematical operators that can express rotation. All you need to know here is that
+        // Quaternion.identity means no rotation.
+        GameObject projectileObject =
+            Instantiate(projectilePrefab, rigidbody2D.position + Vector2.up * 0.5f, Quaternion.identity);
+        
+        Projectile projectile = projectileObject.GetComponent<Projectile>();
+        projectile.Launch(moveDirection, 300);
+        animator.SetTrigger("Launch");
     }
 }
